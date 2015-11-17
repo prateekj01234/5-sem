@@ -11,6 +11,7 @@
         android:name="com.example.parveenjain.trainservice.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="com.example.parveenjain.trainservice.permission.MAPS_RECEIVE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -67,6 +68,11 @@
         <activity
             android:name=".TrainNo"
             android:label="@string/title_activity_train_no"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+        <activity
+            android:name=".Trains"
+            android:label="@string/title_activity_trains"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
     </application>
