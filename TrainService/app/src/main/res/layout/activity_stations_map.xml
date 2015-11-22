@@ -31,6 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/editSource"
+        android:hint="Enter Source"
         android:layout_alignTop="@+id/source"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
@@ -41,6 +42,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/editDestination"
+        android:hint="Enter Destination"
         android:layout_alignTop="@+id/destination"
         android:layout_alignRight="@+id/editSource"
         android:layout_alignEnd="@+id/editSource" />
@@ -49,7 +51,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/editSearch"
-        android:text="Map Search"
+        android:hint="Map Search"
         android:layout_above="@+id/map"
         android:layout_toLeftOf="@+id/submitbtn"
         android:layout_toStartOf="@+id/submitbtn" />

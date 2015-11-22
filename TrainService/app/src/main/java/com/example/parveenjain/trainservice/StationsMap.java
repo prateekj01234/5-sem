@@ -1,6 +1,7 @@
 package com.example.parveenjain.trainservice;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -16,7 +17,10 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 
+import com.example.parveenjain.trainservice.model.stationModel;
 import com.example.parveenjain.trainservice.model.trainCodeModel;
+import com.example.parveenjain.trainservice.parser.stationParser;
+import com.example.parveenjain.trainservice.parser.trainCodeParser;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -31,12 +35,15 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 public class StationsMap extends AppCompatActivity {
 
     ProgressBar pb;
 
+    String scode,dcode;
+    String uri;
     String api="iolce7946";
     EditText editS= (EditText) findViewById(R.id.editSource);
     String source = editS.getText().toString();
@@ -46,7 +53,7 @@ public class StationsMap extends AppCompatActivity {
     String uriscode ="http://api.railwayapi.com/name_to_code/station/"+source+"/apikey/"+api+"/";
     String uridcode ="http://api.railwayapi.com/name_to_code/station/"+destination+"/apikey/"+api+"/";
 
-    String uri = "http://api.railwayapi.com/between/source/<station code>/dest/<station code>/apikey/"+api+"/";
+
 
     protected boolean isOnline() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -60,9 +67,28 @@ public class StationsMap extends AppCompatActivity {
 
     public void submit(View view) {
         if (isOnline()) {
-            requestData(uriscode);
-            requestData(uridcode);
+            requestData(uriscode,1);
+
+            for(trainCodeModel trainCodeModel : trainCcodeList) {
+
+                if(trainCodeModel.getFullname()==source.toUpperCase()) {
+                    scode=trainCodeModel.getCode();
+                    break;
+                }
+            }
+
+            requestData(uridcode,1);
+
+            for(trainCodeModel trainCodeModel : trainCcodeList) {
+                if(trainCodeModel.getFullname()==destination.toUpperCase()) {
+                    dcode=trainCodeModel.getCode();
+                    break;
+                }
+            }
+            uri = "http://api.railwayapi.com/between/source/"+scode+"/dest/"+dcode+"/apikey/"+api+"/";
+
             requestData(uri);
+
         } else {
             Toast.makeText(this,"Network isn't available",Toast.LENGTH_LONG).show();
         }
@@ -74,7 +100,10 @@ public class StationsMap extends AppCompatActivity {
            }
         */
 
-    List<trainCodeModel> traiCcodeList;
+    List<trainCodeModel> trainCcodeList;
+    //List<stationModel> stationList;
+    ArrayList<stationModel> stationList = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,54 +130,63 @@ public class StationsMap extends AppCompatActivity {
 
 
 
-private void requestData(String uri) {
-     MyTask task = new MyTask();
-     task.execute(uri);
-}
+    private void requestData(String uri,int tag) {
+        StationCode task = new StationCode();
+        task.execute(uri);
+    }
+    private void requestData(String uri) {
+        Train task = new Train();
+        task.execute(uri);
+    }
 
-    private class MyTask extends AsyncTask<String,String,String> {
+    private class StationCode extends AsyncTask<String,String,String> {
         @Override
         protected void onPreExecute() {
             pb.setVisibility(View.VISIBLE);
-            super.onPreExecute();
+           // super.onPreExecute();
         }
 
         @Override
         protected String doInBackground(String... param) {
-            BufferedReader reader=null;
-            try {
-                URL url = new URL(param[0]);
-                HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
-                StringBuilder sb = new StringBuilder();
-                reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-
-                String line;
-                while((line = reader.readLine()) != null) {
-                    sb.append(line+"\n");
-                }
-                return sb.toString();
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            } finally {
-                if(reader != null) {
-                    try {
-                        reader.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        return null;
-                    }
-                }
-            }
-
+            String content = Httpmanager.getData(param[0]);
+            return content;
         }
 
         @Override
         protected void onPostExecute(String s) {
+            trainCcodeList = trainCodeParser.parseFeed(s);
            // updateDisplay(s);
             pb.setVisibility(View.INVISIBLE);
-            super.onPostExecute(s);
+          //  super.onPostExecute(s);
+        }
+    }
+
+    private class Train extends AsyncTask<String,String,String> {
+        @Override
+        protected void onPreExecute() {
+            pb.setVisibility(View.VISIBLE);
+            //super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... param) {
+
+            String content = Httpmanager.getData(param[0]);
+            return content;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            stationList = stationParser.parseFeed(s);
+            // updateDisplay(s);
+            Intent intent = new Intent(getApplicationContext(),Trains.class);
+            Bundle bundle = new Bundle();
+            bundle.putParcelableArrayList("trainRecord",stationList);
+            intent.putExtras(bundle);
+            startActivity(intent);
+            pb.setVisibility(View.INVISIBLE);
+           // super.onPostExecute(s);
         }
     }
 

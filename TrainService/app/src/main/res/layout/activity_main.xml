@@ -11,7 +11,8 @@
 
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="51dp" />
+        android:layout_marginTop="51dp"
+        android:onClick="fnTrainBtwStation" />
 
     <Button
         android:layout_width="wrap_content"
@@ -20,5 +21,6 @@
         android:id="@+id/TrainDetails"
         android:layout_marginTop="179dp"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:onClick="fnTrainDetails" />
 </RelativeLayout>

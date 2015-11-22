@@ -12,10 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class stationParser {
-    public static List<stationModel> parseFeed(String content) {
+    public static ArrayList<stationModel> parseFeed(String content) {
         try {
             JSONArray ar = new JSONArray(content);
-            List<stationModel> stationList = new ArrayList<>();
+            ArrayList<stationModel> stationList = new ArrayList<>();
 
             for (int i = 0; i < ar.length(); i++) {
 

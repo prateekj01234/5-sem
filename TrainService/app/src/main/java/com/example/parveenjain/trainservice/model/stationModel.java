@@ -1,7 +1,10 @@
 package com.example.parveenjain.trainservice.model;
 
 
-public class stationModel {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class stationModel implements Parcelable{
 
     private int no;
     private String src_departure_time;
@@ -68,4 +71,40 @@ public class stationModel {
     }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(no);
+        dest.writeString(src_departure_time);
+        dest.writeString(to);
+        dest.writeString(dest_arrival_time);
+        dest.writeInt(number);
+        dest.writeString(name);
+        dest.writeString(from);
+    }
+    public stationModel(Parcel in) {
+        no=in.readInt();
+        src_departure_time=in.readString();
+        to=in.readString();
+        dest_arrival_time=in.readString();
+        number=in.readInt();
+        name=in.readString();
+        from=in.readString();
+    }
+    public stationModel() {
+
+    }
+
+    public static final Parcelable.Creator<stationModel> CREATOR = new Parcelable.Creator<stationModel>() {
+        public stationModel createFromParcel(Parcel in) {
+            return new stationModel(in);
+        }
+        public stationModel[] newArray(int size) {
+            return new stationModel[size];
+        }
+    };
 }

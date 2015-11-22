@@ -14,13 +14,14 @@ public class trainCodeParser {
     public static List<trainCodeModel> parseFeed(String content) {
         try {
             JSONArray ar = new JSONArray(content);
-            List<trainCodeModel> trainCodeList = new ArrayList<>();
+            ArrayList<trainCodeModel> trainCodeList = new ArrayList<>();
 
             for (int i = 0; i < ar.length(); i++) {
 
                 JSONObject obj = ar.getJSONObject(i);
                 trainCodeModel trainCodeModel = new trainCodeModel();
 
+                trainCodeModel.setFullname(obj.getString("fullname"));
                 trainCodeModel.setCode(obj.getString("code"));
 
                 trainCodeList.add(trainCodeModel);
