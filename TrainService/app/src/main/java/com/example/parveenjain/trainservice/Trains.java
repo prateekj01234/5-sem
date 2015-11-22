@@ -91,7 +91,6 @@ public class Trains extends AppCompatActivity {
         table.addView(rowTitle);
 
         for(stationModel q : arrayList) {
-            int i=1;
             TableRow row = new TableRow(this);
 
             TextView no = new TextView(this);
@@ -137,9 +136,9 @@ public class Trains extends AppCompatActivity {
             }
         });
     }
-    protected void updateDisplay(String message){
-        output.append(message + "\n");
-    }
+    //protected void updateDisplay(String message){
+    //    output.append(message + "\n");
+    //}
 
 
 }

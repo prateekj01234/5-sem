@@ -71,7 +71,7 @@ public class StationsMap extends AppCompatActivity {
 
             for(trainCodeModel trainCodeModel : trainCcodeList) {
 
-                if(trainCodeModel.getFullname()==source.toUpperCase()) {
+                if(trainCodeModel.getFullname().equals(source.toUpperCase())) {
                     scode=trainCodeModel.getCode();
                     break;
                 }
@@ -80,7 +80,7 @@ public class StationsMap extends AppCompatActivity {
             requestData(uridcode,1);
 
             for(trainCodeModel trainCodeModel : trainCcodeList) {
-                if(trainCodeModel.getFullname()==destination.toUpperCase()) {
+                if(trainCodeModel.getFullname().equals(destination.toUpperCase())) {
                     dcode=trainCodeModel.getCode();
                     break;
                 }
@@ -149,8 +149,8 @@ public class StationsMap extends AppCompatActivity {
         @Override
         protected String doInBackground(String... param) {
 
-            String content = Httpmanager.getData(param[0]);
-            return content;
+            String content1 = Httpmanager.getData(param[0]);
+            return content1;
         }
 
         @Override
@@ -172,8 +172,8 @@ public class StationsMap extends AppCompatActivity {
         @Override
         protected String doInBackground(String... param) {
 
-            String content = Httpmanager.getData(param[0]);
-            return content;
+            String content2 = Httpmanager.getData(param[0]);
+            return content2;
         }
 
         @Override
