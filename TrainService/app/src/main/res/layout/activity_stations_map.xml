@@ -72,7 +72,8 @@
         android:id="@+id/searchbtn"
         android:layout_below="@+id/submitbtn"
         android:layout_alignRight="@+id/editDestination"
-        android:layout_alignEnd="@+id/editDestination" />
+        android:layout_alignEnd="@+id/editDestination"
+        android:onClick="geoLocate" />
     <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.MapFragment"

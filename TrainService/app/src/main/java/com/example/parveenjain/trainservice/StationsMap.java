@@ -2,6 +2,8 @@ package com.example.parveenjain.trainservice;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -12,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.support.v4.app.FragmentActivity;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -21,6 +24,7 @@ import com.example.parveenjain.trainservice.model.stationModel;
 import com.example.parveenjain.trainservice.model.trainCodeModel;
 import com.example.parveenjain.trainservice.parser.stationParser;
 import com.example.parveenjain.trainservice.parser.trainCodeParser;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -52,7 +56,7 @@ public class StationsMap extends AppCompatActivity {
 
     String uriscode ="http://api.railwayapi.com/name_to_code/station/"+source+"/apikey/"+api+"/";
     String uridcode ="http://api.railwayapi.com/name_to_code/station/"+destination+"/apikey/"+api+"/";
-
+    GoogleMap googleMap;
 
 
     protected boolean isOnline() {
@@ -109,7 +113,7 @@ public class StationsMap extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stations_map);
-        GoogleMap googleMap;
+
         googleMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -128,7 +132,33 @@ public class StationsMap extends AppCompatActivity {
 
     }
 
+    //googleMap.setOnMapClickListener
 
+
+    private void gotoLocation(double lat, double lng,float zoom) {
+        LatLng ll = new LatLng(lat,lng);
+        CameraUpdate update = CameraUpdateFactory.newLatLngZoom(ll,zoom);
+        googleMap.moveCamera(update);
+    }
+
+    public void geoLocate(View v) throws IOException {
+        hideSoftkeyboard(v);
+
+        EditText et = (EditText) findViewById(R.id.editSearch);
+        String location = et.getText().toString();
+
+        Geocoder gc = new Geocoder(this);
+        List<Address> list = gc.getFromLocationName(location,1);
+        Address add = list.get(0);
+        double lat = add.getLatitude();
+        double lng = add.getLongitude();
+        gotoLocation(lat,lng,9);
+    }
+
+    private void hideSoftkeyboard(View v) {
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(v.getWindowToken(),0);
+    }
 
     private void requestData(String uri,int tag) {
         StationCode task = new StationCode();

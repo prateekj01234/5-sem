@@ -1,5 +1,6 @@
 package com.example.parveenjain.trainservice;
 
+import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
@@ -10,12 +11,20 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    ArrayList<LatLng> latLngs = new ArrayList<>();
+    Bundle bundle = getIntent().getExtras();
+    ArrayList<trainRouteModel> arrayList;
+
+    {
+        arrayList = bundle.getParcelableArrayList("trainRoute");
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +33,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         Bundle bundle = getIntent().getExtras();
         ArrayList<trainRouteModel> arrayList = bundle.getParcelableArrayList("trainRoute");
+
+
+
+        for(trainRouteModel trainRouteModel : arrayList) {
+
+            Double tmp1 = Double.valueOf(trainRouteModel.getLatitude());
+            Double tmp2 = Double.valueOf(trainRouteModel.getLongitude());
+            LatLng tmp = new LatLng(tmp1,tmp2);
+
+            latLngs.add(tmp);
+
+        }
+
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -44,10 +66,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        LatLng lattmp;
+        PolylineOptions polylineOptions  = new PolylineOptions();
+
+        for(LatLng latLng : latLngs) {
+            polylineOptions.add(latLng);
+        }
+
+        polylineOptions.width(3).color(Color.BLUE).geodesic(true);
+        mMap.addPolyline(polylineOptions);
+        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,10));
+
+        for(trainRouteModel trainRouteModel : arrayList) {
+            Double tmplat = Double.valueOf(trainRouteModel.getLatitude());
+            Double tmplong = Double.valueOf(trainRouteModel.getLongitude());
+            lattmp = new LatLng(tmplat,tmplong);
+            mMap.addMarker(new MarkerOptions().position(lattmp).title(trainRouteModel.getNo()+". "+trainRouteModel.getFullname()));
+        }
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        //LatLng sydney = new LatLng(-34, 151);
+        //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 }
