@@ -42,7 +42,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StationsMap extends AppCompatActivity {
+public class StationsMap extends AppCompatActivity implements GoogleMap.OnMapLongClickListener{
 
     ProgressBar pb;
 
@@ -121,6 +121,8 @@ public class StationsMap extends AppCompatActivity {
         pb = (ProgressBar) findViewById(R.id.progressBar);
         pb.setVisibility(View.INVISIBLE);
 
+        googleMap.setOnMapLongClickListener(this);
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,7 +134,10 @@ public class StationsMap extends AppCompatActivity {
 
     }
 
-    //googleMap.setOnMapClickListener
+    @Override
+    public void onMapLongClick(LatLng point) {
+
+    }
 
 
     private void gotoLocation(double lat, double lng,float zoom) {
@@ -191,6 +196,8 @@ public class StationsMap extends AppCompatActivity {
           //  super.onPostExecute(s);
         }
     }
+
+
 
     private class Train extends AsyncTask<String,String,String> {
         @Override
