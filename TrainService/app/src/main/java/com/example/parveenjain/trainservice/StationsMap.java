@@ -31,6 +31,7 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.BufferedReader;
@@ -42,7 +43,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StationsMap extends AppCompatActivity {
+public class StationsMap extends AppCompatActivity implements GoogleMap.OnMapLongClickListener{
 
     ProgressBar pb;
 
@@ -121,10 +122,13 @@ public class StationsMap extends AppCompatActivity {
         pb = (ProgressBar) findViewById(R.id.progressBar);
         pb.setVisibility(View.INVISIBLE);
 
+        googleMap.setOnMapLongClickListener(this);
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
@@ -132,7 +136,35 @@ public class StationsMap extends AppCompatActivity {
 
     }
 
-    //googleMap.setOnMapClickListener
+    @Override
+    public void onMapLongClick(LatLng point) {
+        List<Address> namelist = null;
+        Address a;
+        if(source.equals(null)) {
+            googleMap.addMarker(new MarkerOptions().position(point).title("Source"));
+            Geocoder gcd =new Geocoder(this);
+            try {
+                namelist = gcd.getFromLocation(point.latitude,point.longitude,2);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            a = namelist.get(0);
+            editS.setText(a.getLocality());
+        }
+        else {
+            googleMap.addMarker(new MarkerOptions().position(point).title("Destination"));
+            Geocoder gcd =new Geocoder(this);
+            try {
+                namelist = gcd.getFromLocation(point.latitude,point.longitude,2);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            a = namelist.get(0);
+            editD.setText(a.getLocality());
+        }
+    }
+
+
 
 
     private void gotoLocation(double lat, double lng,float zoom) {
@@ -191,6 +223,8 @@ public class StationsMap extends AppCompatActivity {
           //  super.onPostExecute(s);
         }
     }
+
+
 
     private class Train extends AsyncTask<String,String,String> {
         @Override
